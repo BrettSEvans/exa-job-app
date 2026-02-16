@@ -12,7 +12,6 @@
             --text-muted: #888888;
             --accent-primary: #a855f7;
             --accent-secondary: #3b82f6;
-            --accent-success: #22c55e;
             --sidebar-width: 280px;
             --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
@@ -25,10 +24,10 @@
             font-family: var(--font-main);
             display: flex;
             height: 100vh;
+            width: 100vw;
             overflow: hidden;
         }
 
-        /* Sidebar Navigation */
         #sidebar {
             width: var(--sidebar-width);
             background-color: var(--sidebar-bg);
@@ -37,6 +36,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            flex-shrink: 0;
         }
 
         .brand {
@@ -67,7 +67,6 @@
             border-left: 3px solid var(--accent-primary);
         }
 
-        /* Main Content Area */
         #presentation-area {
             flex-grow: 1;
             position: relative;
@@ -90,33 +89,24 @@
             display: none;
             width: 100%;
             max-width: 1000px;
-            animation: fadeIn 0.5s ease-out;
+            animation: fadeIn 0.4s ease-out;
         }
 
         .slide.active { display: block; }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: scale(0.98); }
+            to { opacity: 1; transform: scale(1); }
         }
 
-        /* Slide Components */
-        .hero-text { font-size: 4.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 1rem; }
-        .sub-text { font-size: 1.8rem; color: var(--text-muted); margin-top: 1.5rem; }
+        .hero-text { font-size: 4rem; font-weight: 800; line-height: 1.1; margin-bottom: 1rem; }
+        .sub-text { font-size: 1.6rem; color: var(--text-muted); margin-top: 1.5rem; }
         .highlight { color: var(--accent-primary); }
+        
         .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-top: 3rem; }
         .stat-card { background: #111; padding: 2rem; border-radius: 16px; border: 1px solid #222; }
-        .stat-value { font-size: 3.5rem; font-weight: 800; color: var(--accent-secondary); }
-        .stat-label { font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
-
-        .vs-container { display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
-        .vs-box { flex: 1; padding: 2.5rem; border-radius: 20px; background: #0a0a0a; border: 1px solid #222; text-align: center; }
-        .vs-box.highlighted { border-color: var(--accent-primary); background: rgba(168, 85, 247, 0.05); }
-        .vs-circle { width: 60px; height: 60px; border-radius: 50%; background: #222; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-
-        .comparison-table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
-        .comparison-table th { text-align: left; padding: 1rem; color: var(--text-muted); border-bottom: 1px solid #222; }
-        .comparison-table td { padding: 1.5rem 1rem; font-size: 1.25rem; border-bottom: 1px solid #111; }
+        .stat-value { font-size: 3rem; font-weight: 800; color: var(--accent-secondary); }
+        .stat-label { font-size: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
@@ -124,12 +114,12 @@
     <nav id="sidebar">
         <div class="brand">EXA<span>.AI</span></div>
         <ul class="chapter-list">
-            <li class="chapter-item active" onclick="goToSlide(0)">Neural Advantage</li>
-            <li class="chapter-item" onclick="goToSlide(2)">Infrastructure</li>
-            <li class="chapter-item" onclick="goToSlide(4)">Signal vs. Noise</li>
-            <li class="chapter-item" onclick="goToSlide(5)">The Searchlight</li>
-            <li class="chapter-item" onclick="goToSlide(7)">Performance</li>
-            <li class="chapter-item" onclick="goToSlide(9)">Enterprise Ready</li>
+            <li class="chapter-item active" data-chap-id="0" onclick="goToSlide(0)">Neural Advantage</li>
+            <li class="chapter-item" data-chap-id="1" onclick="goToSlide(2)">Infrastructure</li>
+            <li class="chapter-item" data-chap-id="2" onclick="goToSlide(4)">Signal vs. Noise</li>
+            <li class="chapter-item" data-chap-id="3" onclick="goToSlide(5)">The Searchlight</li>
+            <li class="chapter-item" data-chap-id="4" onclick="goToSlide(7)">Performance</li>
+            <li class="chapter-item" data-chap-id="5" onclick="goToSlide(9)">Enterprise Ready</li>
         </ul>
     </nav>
 
@@ -137,118 +127,156 @@
         <div class="slide-counter" id="counter">1/10</div>
 
         <div class="slide active" data-chapter="0">
-            <h1 class="hero-text">Built for <span class="highlight">AI</span> to ingest data.</h1>
-            <p class="sub-text">Google is for clicking ads. Exa is for neural processing.</p>
+            <h1 class="hero-text">Built for <span class="highlight">AI</span> to ingest data[cite: 6].</h1>
+            <p class="sub-text">Google is for clicking ads. Exa is for neural processing[cite: 4, 6].</p>
         </div>
 
         <div class="slide" data-chapter="0">
-            <h1 class="hero-text">The "Clean Web"</h1>
+            <h1 class="hero-text">The "Clean Web" [cite: 3]</h1>
             <div class="stat-grid">
                 <div class="stat-card">
                     <div class="stat-value">Zero</div>
-                    <div class="stat-label">SEO Spam & Ads</div>
+                    <div class="stat-label">SEO Spam & Ads [cite: 21, 70]</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value">Neural</div>
-                    <div class="stat-label">Search Index</div>
+                    <div class="stat-label">Search Index [cite: 4]</div>
                 </div>
             </div>
         </div>
 
         <div class="slide" data-chapter="1">
             <h1 class="hero-text">Discovery at <span class="highlight">Scale</span></h1>
-            <div class="vs-container" style="margin-top: 3rem;">
-                <div class="vs-box">
-                    <h3>Tavily</h3>
-                    <p class="sub-text">1-10 Results<br>Quick Answer Wrapper</p>
+            <p class="sub-text">Infrastructure vs. Wrappers[cite: 9].</p>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Tavily [cite: 11]</div>
+                    <div class="stat-value" style="font-size: 2rem;">1-10 Results</div>
                 </div>
-                <div class="vs-circle">VS</div>
-                <div class="vs-box highlighted">
-                    <h3>Exa</h3>
-                    <p class="sub-text">1,000+ Results<br>Discovery Infrastructure</p>
+                <div class="stat-card">
+                    <div class="stat-label">Exa [cite: 13, 70]</div>
+                    <div class="stat-value" style="font-size: 2rem; color: var(--accent-primary);">1,000+ Results</div>
                 </div>
             </div>
         </div>
 
         <div class="slide" data-chapter="1">
-            <h1 class="hero-text">Escape the <span class="highlight">Black Box</span></h1>
-            <p class="sub-text">Granular filtering by domain, date, and data category.</p>
-            <div class="stat-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Perplexity</div>
-                    <div class="stat-value" style="font-size: 2rem; color: var(--accent-danger);">Pre-packaged Summary</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Exa</div>
-                    <div class="stat-value" style="font-size: 2rem; color: var(--accent-success);">Raw Data Control</div>
-                </div>
+            <h1 class="hero-text">Control the Logic</h1>
+            <p class="sub-text">Granular filtering by domain, date, and category[cite: 16].</p>
+            <div class="stat-card" style="margin-top: 2rem;">
+                <p>Build your own logic instead of using a "Black Box" API[cite: 16, 17].</p>
             </div>
         </div>
 
         <div class="slide" data-chapter="2">
-            <h1 class="hero-text">Model-Ready <span class="highlight">Signal</span></h1>
-            <table class="comparison-table">
-                <tr><th>Feature</th><th>Legacy (Google/Serper)</th><th>Exa</th></tr>
-                <tr><td>Formatting</td><td>Cookie Banners / HTML Noise</td><td>Clean Markdown</td></tr>
-                <tr><td>Context</td><td>SEO Snippets</td><td>Semantic Highlights</td></tr>
-                <tr><td>Reliability</td><td>High Hallucination Risk</td><td>Grounded Context</td></tr>
-            </table>
-        </div>
-
-        <div class="slide" data-chapter="3">
-            <h1 class="hero-text">The <span class="highlight">Searchlight</span></h1>
-            <p class="sub-text">Firecrawl scrapes what you know. Exa finds what you don't.</p>
-            <div class="stat-card" style="margin-top: 2rem; border-left: 5px solid var(--accent-primary);">
-                <p style="font-size: 1.5rem;">"I need to find all companies doing X."</p>
+            <h1 class="hero-text">No More Noise [cite: 20]</h1>
+            <p class="sub-text">100% SEO-spam free index[cite: 70].</p>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Exa Highlights [cite: 21]</div>
+                    <div class="stat-value" style="font-size: 1.8rem; color: var(--accent-success);">Clean Markdown</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Legacy Search [cite: 23]</div>
+                    <div class="stat-value" style="font-size: 1.8rem; color: var(--accent-danger);">Hallucinations</div>
+                </div>
             </div>
         </div>
 
         <div class="slide" data-chapter="3">
-            <h1 class="hero-text">Intent over Keywords</h1>
-            <p class="sub-text">Brave uses strings. Exa uses meaning.</p>
+            <h1 class="hero-text">The <span class="highlight">Searchlight</span> [cite: 26]</h1>
+            <p class="sub-text">Semantic retrieval across the entire web[cite: 27].</p>
+            <div class="stat-card" style="margin-top: 2rem;">
+                <p style="font-size: 1.4rem;">Find what you don't already know[cite: 27, 29].</p>
+            </div>
+        </div>
+
+        <div class="slide" data-chapter="3">
+            <h1 class="hero-text">Neural Intent [cite: 34]</h1>
+            <p class="sub-text">Keyword matching is for 2010. Neural understanding is for 2026[cite: 1, 34].</p>
+        </div>
+
+        <div class="slide" data-chapter="4">
+            <h1 class="hero-text">Extreme Speed</h1>
             <div class="stat-grid">
                 <div class="stat-card">
-                    <div class="stat-label">Keyword Match</div>
-                    <div class="stat-value" style="font-size: 2rem;">"Machine Learning"</div>
+                    <div class="stat-value">< 500ms</div>
+                    <div class="stat-label">Real-time Latency [cite: 54]</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">Neural Understanding</div>
-                    <div class="stat-value" style="font-size: 2rem; color: var(--accent-primary);">Research Context</div>
+                    <div class="stat-value">94.9%</div>
+                    <div class="stat-label">Semantic Accuracy [cite: 52]</div>
                 </div>
             </div>
         </div>
 
         <div class="slide" data-chapter="4">
-            <h1 class="hero-text">Unmatched <span class="highlight">Speed</span></h1>
-            <div class="stat-grid">
-                <div class="stat-card">
-                    <div class="stat-value">< 500ms</div>
-                    <div class="stat-label">Latency</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">94.9%</div>
-                    <div class="stat-label">SimpleQA Accuracy</div>
-                </div>
-            </div>
+            <h1 class="hero-text">Predictable Pricing [cite: 54]</h1>
+            <p class="sub-text">No spreadsheet-style pricing headaches[cite: 54].</p>
         </div>
 
         <div class="slide" data-chapter="5">
-            <h1 class="hero-text">Enterprise <span class="highlight">SLA</span></h1>
-            <p class="sub-text">Not a consumer search product. Production-ready infrastructure.</p>
-            <div class="stat-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Update Frequency</div>
-                    <div class="stat-value" style="font-size: 2.5rem;">Every Minute</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Architecture</div>
-                    <div class="stat-value" style="font-size: 2.5rem;">Modular Endpoints</div>
-                </div>
+            <h1 class="hero-text">B2B Production [cite: 42]</h1>
+            <p class="sub-text">SLA-backed infrastructure for enterprise apps[cite: 42].</p>
+            <div class="stat-card" style="margin-top: 2rem;">
+                <p>Index crawled every minute[cite: 45].</p>
             </div>
         </div>
 
-        <div class="slide" data-chapter="5">
-            <h1 class="hero-text">Kill <span class="highlight">Pre-processing</span></h1>
-            <p class="sub-text">Stop building scrapers for Bing's "10 blue links."</p>
-            <div class="stat-card" style="margin-top: 3rem; text-align: center; background: linear-gradient(45deg, #111, #1a1a1a);">
-                <h2 style="font-size: 2.5rem;">Neural Relevance</h2>
+    </main>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const chapterItems = document.querySelectorAll('.chapter-item');
+        const counterDisplay = document.getElementById('counter');
+
+        function updateDisplay() {
+            // Toggle slide visibility
+            slides.forEach((slide, index) => {
+                slide.style.display = (index === currentSlide) ? 'block' : 'none';
+            });
+
+            // Update Counter
+            counterDisplay.innerText = `${currentSlide + 1}/${slides.length}`;
+
+            // Highlight correct sidebar chapter
+            const activeChapterId = slides[currentSlide].getAttribute('data-chapter');
+            chapterItems.forEach(item => {
+                if (item.getAttribute('data-chap-id') === activeChapterId) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        function goToSlide(index) {
+            if (index >= 0 && index < slides.length) {
+                currentSlide = index;
+                updateDisplay();
+            }
+        }
+
+        // Global Keyboard Listener
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                if (currentSlide < slides.length - 1) {
+                    e.preventDefault();
+                    currentSlide++;
+                    updateDisplay();
+                }
+            } else if (e.key === 'ArrowLeft') {
+                if (currentSlide > 0) {
+                    e.preventDefault();
+                    currentSlide--;
+                    updateDisplay();
+                }
+            }
+        });
+
+        // Initialize display
+        updateDisplay();
+    </script>
+</body>
+</html>
