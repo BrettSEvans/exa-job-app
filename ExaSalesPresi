@@ -250,6 +250,33 @@
             border-radius: 4px;
         }
 
+        /* Key Hint Video Styling */
+        .key-hint-container {
+            position: absolute;
+            bottom: 40px;
+            right: 40px;
+            width: 80px;
+            height: 80px;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
+        }
+
+        .key-hint-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+        
+        .key-hint-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+            text-align: center;
+            font-family: monospace;
+        }
+
         /* Animations */
         @keyframes pulse {
             0% { transform: scale(1); opacity: 0.8; }
@@ -291,6 +318,13 @@
             <div class="pulsing-circle"></div>
             <h1>Exa Instant</h1>
             <p>The Search Engine for <span class="highlight">AI Agents</span>.</p>
+            
+            <div class="key-hint-container">
+                <video autoplay loop muted playsinline>
+                    <source src="right arrow Key button.mp4" type="video/mp4">
+                    </video>
+                <div class="key-hint-label">Next</div>
+            </div>
         </div>
 
         <div class="slide" data-chapter="1">
