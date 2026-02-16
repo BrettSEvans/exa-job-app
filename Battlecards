@@ -3,17 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exa.ai Sales Presentation 2026</title>
+    <title>Exa.ai Sales Battlecards 2026</title>
     <style>
         :root {
             --bg-color: #050505;
             --sidebar-bg: #0a0a0a;
             --text-color: #ffffff;
             --text-muted: #888888;
-            --accent-primary: #a855f7;
-            --accent-secondary: #3b82f6;
+            --accent-primary: #a855f7; /* Purple */
+            --accent-secondary: #3b82f6; /* Blue */
+            --accent-success: #22c55e; /* Green */
+            --accent-danger: #ef4444; /* Red */
             --sidebar-width: 280px;
-            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -22,12 +24,12 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             font-family: var(--font-main);
-            display: flex;
-            height: 100vh;
-            width: 100vw;
             overflow: hidden;
+            height: 100vh;
+            display: flex;
         }
 
+        /* Sidebar Navigation */
         #sidebar {
             width: var(--sidebar-width);
             background-color: var(--sidebar-bg);
@@ -35,21 +37,19 @@
             padding: 2rem 1.5rem;
             display: flex;
             flex-direction: column;
-            height: 100%;
-            flex-shrink: 0;
+            z-index: 100;
         }
 
         .brand {
             font-size: 1.5rem;
             font-weight: 800;
+            color: var(--text-color);
             margin-bottom: 2.5rem;
             letter-spacing: -1px;
         }
-
         .brand span { color: var(--accent-primary); }
 
         .chapter-list { list-style: none; }
-
         .chapter-item {
             padding: 0.75rem 1rem;
             cursor: pointer;
@@ -57,226 +57,226 @@
             color: var(--text-muted);
             transition: all 0.2s ease;
             font-size: 0.9rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.25rem;
             border-left: 3px solid transparent;
         }
-
+        .chapter-item:hover { background: rgba(255,255,255,0.05); color: #fff; }
         .chapter-item.active {
-            background-color: rgba(168, 85, 247, 0.1);
+            background: rgba(168, 85, 247, 0.1);
             color: var(--accent-primary);
             border-left: 3px solid var(--accent-primary);
         }
 
-        #presentation-area {
-            flex-grow: 1;
+        /* Main Presentation Area */
+        #presentation {
+            flex: 1;
             position: relative;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 4rem;
+            overflow: hidden;
         }
 
         .slide-counter {
             position: absolute;
             top: 2rem;
-            right: 2rem;
-            color: var(--text-muted);
+            right: 2.5rem;
             font-size: 1.2rem;
+            color: var(--text-muted);
             font-weight: 600;
+            z-index: 10;
         }
 
         .slide {
-            display: none;
+            position: absolute;
             width: 100%;
-            max-width: 1000px;
-            animation: fadeIn 0.4s ease-out;
+            height: 100%;
+            padding: 4rem;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: opacity 0.4s ease;
         }
 
-        .slide.active { display: block; }
+        .slide.active { display: flex; animation: fadeIn 0.5s ease-out; }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.98); }
-            to { opacity: 1; transform: scale(1); }
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .hero-text { font-size: 4rem; font-weight: 800; line-height: 1.1; margin-bottom: 1rem; }
-        .sub-text { font-size: 1.6rem; color: var(--text-muted); margin-top: 1.5rem; }
-        .highlight { color: var(--accent-primary); }
-        
-        .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-top: 3rem; }
-        .stat-card { background: #111; padding: 2rem; border-radius: 16px; border: 1px solid #222; }
-        .stat-value { font-size: 3rem; font-weight: 800; color: var(--accent-secondary); }
-        .stat-label { font-size: 1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+        /* Slide Content Styling */
+        h1 { font-size: 4.5rem; margin-bottom: 1.5rem; line-height: 1.1; font-weight: 800; }
+        h2 { font-size: 2.5rem; color: var(--accent-primary); margin-bottom: 1rem; }
+        .stat { font-size: 8rem; font-weight: 900; color: var(--accent-secondary); line-height: 1; }
+        .subtext { font-size: 1.5rem; color: var(--text-muted); max-width: 800px; margin-top: 1.5rem; }
+        .highlight-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid #333;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-top: 2rem;
+            display: flex;
+            gap: 3rem;
+            text-align: left;
+        }
+        .vs-tag { background: var(--accent-danger); padding: 0.2rem 0.8rem; border-radius: 4px; font-size: 1rem; text-transform: uppercase; margin-bottom: 1rem; display: inline-block; }
+
+        /* Icons/Visuals */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            width: 100%;
+            max-width: 1000px;
+        }
+        .side-a { color: var(--accent-danger); }
+        .side-b { color: var(--accent-success); }
     </style>
 </head>
 <body>
 
-    <nav id="sidebar">
-        <div class="brand">EXA<span>.AI</span></div>
-        <ul class="chapter-list">
-            <li class="chapter-item active" data-chap-id="0" onclick="goToSlide(0)">Neural Advantage</li>
-            <li class="chapter-item" data-chap-id="1" onclick="goToSlide(2)">Infrastructure</li>
-            <li class="chapter-item" data-chap-id="2" onclick="goToSlide(4)">Signal vs. Noise</li>
-            <li class="chapter-item" data-chap-id="3" onclick="goToSlide(5)">The Searchlight</li>
-            <li class="chapter-item" data-chap-id="4" onclick="goToSlide(7)">Performance</li>
-            <li class="chapter-item" data-chap-id="5" onclick="goToSlide(9)">Enterprise Ready</li>
-        </ul>
-    </nav>
+<div id="sidebar">
+    <div class="brand">EXA<span>.AI</span></div>
+    <ul class="chapter-list">
+        <li class="chapter-item active" onclick="goToSlide(0)">The Neural Advantage</li>
+        <li class="chapter-item" onclick="goToSlide(2)">Scale & Discovery</li>
+        <li class="chapter-item" onclick="goToSlide(4)">Developer Control</li>
+        <li class="chapter-item" onclick="goToSlide(6)">Technical Precision</li>
+        <li class="chapter-item" onclick="goToSlide(9)">Enterprise Speed</li>
+        <li class="chapter-item" onclick="goToSlide(12)">Quick Reference</li>
+    </ul>
+</div>
 
-    <main id="presentation-area">
-        <div class="slide-counter" id="counter">1/10</div>
+<div id="presentation">
+    <div class="slide-counter" id="counter">1 / 13</div>
 
-        <div class="slide active" data-chapter="0">
-            <h1 class="hero-text">Built for <span class="highlight">AI</span> to ingest data[cite: 6].</h1>
-            <p class="sub-text">Google is for clicking ads. Exa is for neural processing[cite: 4, 6].</p>
+    <div class="slide active" data-chapter="0">
+        <h2>THE CORE DISRUPTOR</h2>
+        <h1>Neural Search Index</h1>
+        <p class="subtext">Exa doesn't scrape Google. It built a private index specifically for <strong>Machines</strong>, not humans clicking ads.</p>
+    </div>
+
+    <div class="slide" data-chapter="0">
+        <div class="stat">100%</div>
+        <h1>SEO-Spam Free</h1>
+        <p class="subtext">Serper/Google returns noise. Exa returns signal through clean Markdown and curated "Highlights."</p>
+    </div>
+
+    <div class="slide" data-chapter="1">
+        <div class="vs-tag">Exa vs Tavily</div>
+        <h1>Infrastructure vs. Wrapper</h1>
+        <div class="comparison-grid">
+            <div class="side-a"><h3>Tavily</h3><p>1-10 Results<br>Agentic Loops</p></div>
+            <div class="side-b"><h3>Exa</h3><p>100+ Results<br>Mass Lead Gen</p></div>
         </div>
+        <p class="subtext">Killer Feature: <strong>Find Similar</strong>. One URL to 100 lookalikes.</p>
+    </div>
 
-        <div class="slide" data-chapter="0">
-            <h1 class="hero-text">The "Clean Web" [cite: 3]</h1>
-            <div class="stat-grid">
-                <div class="stat-card">
-                    <div class="stat-value">Zero</div>
-                    <div class="stat-label">SEO Spam & Ads [cite: 21, 70]</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">Neural</div>
-                    <div class="stat-label">Search Index [cite: 4]</div>
-                </div>
-            </div>
+    <div class="slide" data-chapter="1">
+        <div class="vs-tag">Exa vs Firecrawl</div>
+        <h1>Searchlight vs. Vacuum</h1>
+        <p class="subtext">Firecrawl scrapes what you know. Exa finds what you don't. <strong>Semantic discovery across the entire web.</strong></p>
+    </div>
+
+    <div class="slide" data-chapter="2">
+        <div class="vs-tag">Exa vs Perplexity</div>
+        <h1>API vs. Black Box</h1>
+        <p class="subtext">Stop relying on pre-packaged summaries. Exa provides <strong>granular filtering</strong> (Domain, Date, Category) to build your own logic.</p>
+    </div>
+
+    <div class="slide" data-chapter="2">
+        <div class="vs-tag">Exa vs Linkup.ai</div>
+        <h1>Modularity</h1>
+        <p class="subtext">Unbundle search from crawling. Separate endpoints for <strong>Search, Content, and Similarity</strong> to lower total TCO.</p>
+    </div>
+
+    <div class="slide" data-chapter="3">
+        <div class="vs-tag">Exa vs Brave</div>
+        <h1>Neural vs. Keyword</h1>
+        <div class="stat">Intent</div>
+        <p class="subtext">Brave matches words. Exa understands complex technical queries and research meaning.</p>
+    </div>
+
+    <div class="slide" data-chapter="3">
+        <div class="vs-tag">Exa vs Vertex AI</div>
+        <h1>External World Data</h1>
+        <p class="subtext">Vertex searches your PDFs. Exa grounds your AI in the <strong>World's Data</strong> with minute-by-minute updates.</p>
+    </div>
+
+    <div class="slide" data-chapter="3">
+        <div class="vs-tag">Exa vs Bing</div>
+        <h1>Neutral Relevance</h1>
+        <p class="subtext">Bing is weighted by Microsoft's interests. Exa provides model-ready content, not just "10 blue links."</p>
+    </div>
+
+    <div class="slide" data-chapter="4">
+        <div class="vs-tag">Exa vs Parallel.ai</div>
+        <div class="stat">94.9%</div>
+        <h2>SimpleQA Accuracy</h2>
+        <p class="subtext">Higher accuracy + No "Spreadsheet Pricing" headache.</p>
+    </div>
+
+    <div class="slide" data-chapter="4">
+        <div class="stat">&lt; 500ms</div>
+        <h1>Real-Time Latency</h1>
+        <p class="subtext">Parallel.ai takes minutes for "deep" tasks. Exa delivers raw context instantly.</p>
+    </div>
+
+    <div class="slide" data-chapter="4">
+        <div class="vs-tag">Exa vs You.com</div>
+        <h1>Enterprise-First</h1>
+        <p class="subtext">SLA-backed infrastructure for production B2B apps. Not a secondary consumer API.</p>
+    </div>
+
+    <div class="slide" data-chapter="5">
+        <h1>Quick Win Guide</h1>
+        <div class="highlight-box">
+            <div><strong>Tavily?</strong> Challenge them on Volume.</div>
+            <div><strong>Serper?</strong> Challenge them on SEO Spam.</div>
+            <div><strong>Brave?</strong> Challenge them on Intelligence.</div>
         </div>
+    </div>
+</div>
 
-        <div class="slide" data-chapter="1">
-            <h1 class="hero-text">Discovery at <span class="highlight">Scale</span></h1>
-            <p class="sub-text">Infrastructure vs. Wrappers[cite: 9].</p>
-            <div class="stat-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Tavily [cite: 11]</div>
-                    <div class="stat-value" style="font-size: 2rem;">1-10 Results</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Exa [cite: 13, 70]</div>
-                    <div class="stat-value" style="font-size: 2rem; color: var(--accent-primary);">1,000+ Results</div>
-                </div>
-            </div>
-        </div>
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const chapters = document.querySelectorAll('.chapter-item');
+    const counter = document.getElementById('counter');
 
-        <div class="slide" data-chapter="1">
-            <h1 class="hero-text">Control the Logic</h1>
-            <p class="sub-text">Granular filtering by domain, date, and category[cite: 16].</p>
-            <div class="stat-card" style="margin-top: 2rem;">
-                <p>Build your own logic instead of using a "Black Box" API[cite: 16, 17].</p>
-            </div>
-        </div>
-
-        <div class="slide" data-chapter="2">
-            <h1 class="hero-text">No More Noise [cite: 20]</h1>
-            <p class="sub-text">100% SEO-spam free index[cite: 70].</p>
-            <div class="stat-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Exa Highlights [cite: 21]</div>
-                    <div class="stat-value" style="font-size: 1.8rem; color: var(--accent-success);">Clean Markdown</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Legacy Search [cite: 23]</div>
-                    <div class="stat-value" style="font-size: 1.8rem; color: var(--accent-danger);">Hallucinations</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="slide" data-chapter="3">
-            <h1 class="hero-text">The <span class="highlight">Searchlight</span> [cite: 26]</h1>
-            <p class="sub-text">Semantic retrieval across the entire web[cite: 27].</p>
-            <div class="stat-card" style="margin-top: 2rem;">
-                <p style="font-size: 1.4rem;">Find what you don't already know[cite: 27, 29].</p>
-            </div>
-        </div>
-
-        <div class="slide" data-chapter="3">
-            <h1 class="hero-text">Neural Intent [cite: 34]</h1>
-            <p class="sub-text">Keyword matching is for 2010. Neural understanding is for 2026[cite: 1, 34].</p>
-        </div>
-
-        <div class="slide" data-chapter="4">
-            <h1 class="hero-text">Extreme Speed</h1>
-            <div class="stat-grid">
-                <div class="stat-card">
-                    <div class="stat-value">< 500ms</div>
-                    <div class="stat-label">Real-time Latency [cite: 54]</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value">94.9%</div>
-                    <div class="stat-label">Semantic Accuracy [cite: 52]</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="slide" data-chapter="4">
-            <h1 class="hero-text">Predictable Pricing [cite: 54]</h1>
-            <p class="sub-text">No spreadsheet-style pricing headaches[cite: 54].</p>
-        </div>
-
-        <div class="slide" data-chapter="5">
-            <h1 class="hero-text">B2B Production [cite: 42]</h1>
-            <p class="sub-text">SLA-backed infrastructure for enterprise apps[cite: 42].</p>
-            <div class="stat-card" style="margin-top: 2rem;">
-                <p>Index crawled every minute[cite: 45].</p>
-            </div>
-        </div>
-
-    </main>
-
-    <script>
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        const chapterItems = document.querySelectorAll('.chapter-item');
-        const counterDisplay = document.getElementById('counter');
-
-        function updateDisplay() {
-            // Toggle slide visibility
-            slides.forEach((slide, index) => {
-                slide.style.display = (index === currentSlide) ? 'block' : 'none';
-            });
-
-            // Update Counter
-            counterDisplay.innerText = `${currentSlide + 1}/${slides.length}`;
-
-            // Highlight correct sidebar chapter
-            const activeChapterId = slides[currentSlide].getAttribute('data-chapter');
-            chapterItems.forEach(item => {
-                if (item.getAttribute('data-chap-id') === activeChapterId) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
-            });
-        }
-
-        function goToSlide(index) {
-            if (index >= 0 && index < slides.length) {
-                currentSlide = index;
-                updateDisplay();
-            }
-        }
-
-        // Global Keyboard Listener
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === ' ') {
-                if (currentSlide < slides.length - 1) {
-                    e.preventDefault();
-                    currentSlide++;
-                    updateDisplay();
-                }
-            } else if (e.key === 'ArrowLeft') {
-                if (currentSlide > 0) {
-                    e.preventDefault();
-                    currentSlide--;
-                    updateDisplay();
-                }
-            }
+    function updatePresentation() {
+        slides.forEach((s, i) => {
+            s.classList.toggle('active', i === currentSlide);
         });
+        
+        counter.innerText = `${currentSlide + 1} / ${slides.length}`;
 
-        // Initialize display
-        updateDisplay();
-    </script>
+        // Update Sidebar
+        const chapterIdx = slides[currentSlide].getAttribute('data-chapter');
+        chapters.forEach((c, i) => {
+            c.classList.toggle('active', i == chapterIdx);
+        });
+    }
+
+    function goToSlide(index) {
+        currentSlide = index;
+        updatePresentation();
+    }
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') {
+            if (currentSlide < slides.length - 1) currentSlide++;
+            updatePresentation();
+        }
+        if (e.key === 'ArrowLeft') {
+            if (currentSlide > 0) currentSlide--;
+            updatePresentation();
+        }
+    });
+</script>
+
 </body>
 </html>
