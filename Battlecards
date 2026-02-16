@@ -3,34 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exa.ai Competitive Intelligence Deck</title>
+    <title>Exa.ai Sales Presentation 2026</title>
     <style>
         :root {
             --bg-color: #050505;
             --sidebar-bg: #0a0a0a;
             --text-color: #ffffff;
             --text-muted: #888888;
-            --accent-primary: #a855f7; /* Purple */
-            --accent-secondary: #3b82f6; /* Blue */
-            --accent-success: #22c55e; /* Green */
-            --accent-danger: #ef4444; /* Red */
-            --sidebar-width: 260px;
-            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --accent-primary: #a855f7;
+            --accent-secondary: #3b82f6;
+            --accent-success: #22c55e;
+            --sidebar-width: 280px;
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
             font-family: var(--font-main);
-            overflow: hidden;
-            height: 100vh;
             display: flex;
+            height: 100vh;
+            overflow: hidden;
         }
 
         /* Sidebar Navigation */
@@ -41,610 +36,219 @@
             padding: 2rem 1.5rem;
             display: flex;
             flex-direction: column;
-            z-index: 100;
             height: 100%;
         }
 
         .brand {
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             font-weight: 800;
-            color: var(--text-color);
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
             letter-spacing: -1px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
         }
 
-        .brand span {
-            color: var(--accent-primary);
-        }
+        .brand span { color: var(--accent-primary); }
 
-        .chapter-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
+        .chapter-list { list-style: none; }
 
         .chapter-item {
-            padding: 0.8rem 1rem;
+            padding: 0.75rem 1rem;
             cursor: pointer;
             border-radius: 8px;
             color: var(--text-muted);
-            transition: all 0.3s ease;
-            font-size: 0.95rem;
-            font-weight: 500;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
             border-left: 3px solid transparent;
         }
 
-        .chapter-item:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-            color: #fff;
-        }
-
         .chapter-item.active {
-            background-color: rgba(168, 85, 247, 0.08);
+            background-color: rgba(168, 85, 247, 0.1);
             color: var(--accent-primary);
             border-left: 3px solid var(--accent-primary);
         }
 
         /* Main Content Area */
-        #main-display {
-            flex: 1;
+        #presentation-area {
+            flex-grow: 1;
             position: relative;
             display: flex;
+            align-items: center;
             justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            background: radial-gradient(circle at 50% 10%, rgba(168, 85, 247, 0.05), transparent 60%);
-        }
-
-        /* Slide Container */
-        .slide {
-            position: absolute;
-            width: 85%;
-            height: 85%;
-            opacity: 0;
-            transform: translateY(30px) scale(0.98);
-            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            pointer-events: none;
-        }
-
-        .slide.active {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-            pointer-events: all;
-            z-index: 10;
-        }
-
-        /* Typography */
-        h1 {
-            font-size: 4.5rem;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            letter-spacing: -2px;
-            background: linear-gradient(135deg, #fff 0%, #aaa 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        h2 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            color: #fff;
-            letter-spacing: -1px;
-        }
-
-        h3 {
-            font-size: 1.5rem;
-            color: var(--text-muted);
-            font-weight: 400;
-            margin-bottom: 2rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        p {
-            font-size: 1.8rem;
-            color: #ccc;
-            max-width: 900px;
-            line-height: 1.4;
-        }
-
-        .highlight-text {
-            color: var(--accent-primary);
-            font-weight: 700;
-        }
-
-        .big-number {
-            font-size: 10rem;
-            font-weight: 900;
-            color: var(--accent-primary);
-            line-height: 1;
-            margin: 0.5rem 0;
-            text-shadow: 0 0 50px rgba(168, 85, 247, 0.2);
-            font-variant-numeric: tabular-nums;
-        }
-
-        .sub-stat {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            margin-top: -10px;
-            margin-bottom: 2rem;
-        }
-
-        /* Controls */
-        .controls {
-            position: absolute;
-            top: 2rem;
-            right: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            font-family: monospace;
-            color: #666;
-            z-index: 20;
+            padding: 4rem;
         }
 
         .slide-counter {
-            font-size: 1rem;
-            border: 1px solid #333;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(5px);
-        }
-
-        /* Components: Cards */
-        .card-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            width: 100%;
-            max-width: 1000px;
-            margin-top: 3rem;
-        }
-
-        .card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.08);
-            padding: 2.5rem;
-            border-radius: 16px;
-            text-align: left;
-            transition: transform 0.3s ease;
-        }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(168, 85, 247, 0.3);
-        }
-
-        .card-title {
-            font-size: 1.4rem;
-            color: #fff;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .card-body {
-            font-size: 1.1rem;
-            color: #aaa;
-        }
-
-        /* Components: Comparison Bar */
-        .comparison-container {
-            width: 100%;
-            max-width: 900px;
-            margin-top: 3rem;
-        }
-
-        .comp-row {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            opacity: 0;
-            animation: fadeInRight 0.8s ease forwards;
-        }
-        
-        .comp-row:nth-child(1) { animation-delay: 0.2s; }
-        .comp-row:nth-child(2) { animation-delay: 0.4s; }
-
-        .comp-label {
-            width: 150px;
-            text-align: right;
-            padding-right: 1.5rem;
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            color: var(--text-muted);
             font-size: 1.2rem;
-            color: #fff;
             font-weight: 600;
         }
 
-        .comp-bar-wrapper {
-            flex: 1;
-            background: #1a1a1a;
-            height: 50px;
-            border-radius: 8px;
-            overflow: hidden;
-            position: relative;
+        .slide {
+            display: none;
+            width: 100%;
+            max-width: 1000px;
+            animation: fadeIn 0.5s ease-out;
         }
 
-        .comp-bar {
-            height: 100%;
-            display: flex;
-            align-items: center;
-            padding-left: 1rem;
-            font-weight: 700;
-            font-size: 1.2rem;
-            white-space: nowrap;
-            width: 0;
-            transition: width 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        .slide.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .bar-exa {
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-            color: #fff;
-            box-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
-        }
+        /* Slide Components */
+        .hero-text { font-size: 4.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 1rem; }
+        .sub-text { font-size: 1.8rem; color: var(--text-muted); margin-top: 1.5rem; }
+        .highlight { color: var(--accent-primary); }
+        .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; margin-top: 3rem; }
+        .stat-card { background: #111; padding: 2rem; border-radius: 16px; border: 1px solid #222; }
+        .stat-value { font-size: 3.5rem; font-weight: 800; color: var(--accent-secondary); }
+        .stat-label { font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
 
-        .bar-competitor {
-            background: #333;
-            color: #888;
-        }
+        .vs-container { display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
+        .vs-box { flex: 1; padding: 2.5rem; border-radius: 20px; background: #0a0a0a; border: 1px solid #222; text-align: center; }
+        .vs-box.highlighted { border-color: var(--accent-primary); background: rgba(168, 85, 247, 0.05); }
+        .vs-circle { width: 60px; height: 60px; border-radius: 50%; background: #222; display: flex; align-items: center; justify-content: center; font-weight: bold; }
 
-        /* Components: VS Split */
-        .vs-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4rem;
-            margin-top: 2rem;
-        }
-        
-        .vs-side {
-            text-align: center;
-        }
-        
-        .vs-icon {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        .vs-divider {
-            height: 150px;
-            width: 2px;
-            background: #333;
-            position: relative;
-        }
-        
-        .vs-circle {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #000;
-            border: 2px solid #333;
-            color: #666;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: 700;
-        }
-
-        /* Animations */
-        @keyframes fadeInRight {
-            from { opacity: 0; transform: translateX(-20px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.4); }
-            70% { box-shadow: 0 0 0 20px rgba(168, 85, 247, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); }
-        }
-
-        .pulse-btn {
-            background: var(--accent-primary);
-            color: white;
-            padding: 1rem 3rem;
-            border-radius: 50px;
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-top: 3rem;
-            border: none;
-            cursor: pointer;
-            animation: pulse 2s infinite;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        /* Icons */
-        .icon-box {
-            width: 80px;
-            height: 80px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            color: var(--accent-primary);
-        }
-
+        .comparison-table { width: 100%; border-collapse: collapse; margin-top: 2rem; }
+        .comparison-table th { text-align: left; padding: 1rem; color: var(--text-muted); border-bottom: 1px solid #222; }
+        .comparison-table td { padding: 1.5rem 1rem; font-size: 1.25rem; border-bottom: 1px solid #111; }
     </style>
 </head>
 <body>
 
     <nav id="sidebar">
-        <div class="brand">Exa<span>.ai</span></div>
+        <div class="brand">EXA<span>.AI</span></div>
         <ul class="chapter-list">
-            <li class="chapter-item active" onclick="jumpToChapter(0)">1. The Core Vision</li>
-            <li class="chapter-item" onclick="jumpToChapter(1)">2. Exa vs. Wrappers</li>
-            <li class="chapter-item" onclick="jumpToChapter(2)">3. Exa vs. Chat</li>
-            <li class="chapter-item" onclick="jumpToChapter(3)">4. Exa vs. Legacy</li>
-            <li class="chapter-item" onclick="jumpToChapter(4)">5. Enterprise Performance</li>
-            <li class="chapter-item" onclick="jumpToChapter(5)">6. Closing Pitch</li>
+            <li class="chapter-item active" onclick="goToSlide(0)">Neural Advantage</li>
+            <li class="chapter-item" onclick="goToSlide(2)">Infrastructure</li>
+            <li class="chapter-item" onclick="goToSlide(4)">Signal vs. Noise</li>
+            <li class="chapter-item" onclick="goToSlide(5)">The Searchlight</li>
+            <li class="chapter-item" onclick="goToSlide(7)">Performance</li>
+            <li class="chapter-item" onclick="goToSlide(9)">Enterprise Ready</li>
         </ul>
-        
-        <div style="margin-top: auto; color: #444; font-size: 0.8rem; font-family: monospace;">
-            Press &larr; &rarr; to navigate
-        </div>
     </nav>
 
-    <main id="main-display">
-        <div class="controls">
-            <span class="slide-counter" id="slide-counter">1/10</span>
-        </div>
+    <main id="presentation-area">
+        <div class="slide-counter" id="counter">1/10</div>
 
         <div class="slide active" data-chapter="0">
-            <h3>Competitive Strategy</h3>
-            <h1>The "Clean Web" Advantage</h1>
-            <p>Google/Bing are built for humans to click ads.<br><span class="highlight-text">Exa is built for AI to ingest data.</span></p>
+            <h1 class="hero-text">Built for <span class="highlight">AI</span> to ingest data.</h1>
+            <p class="sub-text">Google is for clicking ads. Exa is for neural processing.</p>
         </div>
 
         <div class="slide" data-chapter="0">
-            <h3>Infrastructure for Discovery</h3>
-            <h2>Not Just a Wrapper</h2>
-            <div class="card-grid">
-                <div class="card">
-                    <div class="card-title">❌ Competitors</div>
-                    <div class="card-body">Scrape Google/Bing. Restricted by ads, rate limits, and human-centric ranking.</div>
+            <h1 class="hero-text">The "Clean Web"</h1>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-value">Zero</div>
+                    <div class="stat-label">SEO Spam & Ads</div>
                 </div>
-                <div class="card" style="border-color: var(--accent-primary);">
-                    <div class="card-title">✅ Exa.ai</div>
-                    <div class="card-body">Proprietary Neural Search Index. Built from the ground up specifically for machines.</div>
+                <div class="stat-card">
+                    <div class="stat-value">Neural</div>
+                    <div class="stat-label">Search Index</div>
                 </div>
             </div>
         </div>
 
         <div class="slide" data-chapter="1">
-            <h3>Exa vs. Tavily</h3>
-            <h2>Volume & Similarity</h2>
-            
-            <div class="comparison-container">
-                <div class="comp-row">
-                    <div class="comp-label">Tavily</div>
-                    <div class="comp-bar-wrapper">
-                        <div class="comp-bar bar-competitor" style="width: 10%;">10 Results</div>
-                    </div>
+            <h1 class="hero-text">Discovery at <span class="highlight">Scale</span></h1>
+            <div class="vs-container" style="margin-top: 3rem;">
+                <div class="vs-box">
+                    <h3>Tavily</h3>
+                    <p class="sub-text">1-10 Results<br>Quick Answer Wrapper</p>
                 </div>
-                <div class="comp-row">
-                    <div class="comp-label">Exa</div>
-                    <div class="comp-bar-wrapper">
-                        <div class="comp-bar bar-exa" style="width: 100%;">1,000+ Results</div>
-                    </div>
+                <div class="vs-circle">VS</div>
+                <div class="vs-box highlighted">
+                    <h3>Exa</h3>
+                    <p class="sub-text">1,000+ Results<br>Discovery Infrastructure</p>
                 </div>
             </div>
-            
-            <p style="margin-top: 3rem;">Wrappers are optimized for small loops.<br>Exa powers <span class="highlight-text">mass research</span> and <span class="highlight-text">lead generation</span>.</p>
         </div>
 
         <div class="slide" data-chapter="1">
-            <h3>Killer Feature</h3>
-            <h1>Find Similar</h1>
-            <div style="font-size: 1.5rem; background: #111; padding: 1rem 2rem; border-radius: 50px; border: 1px solid #333; margin: 2rem 0;">
-                Input 1 URL &rarr; Get 100 Lookalikes
+            <h1 class="hero-text">Escape the <span class="highlight">Black Box</span></h1>
+            <p class="sub-text">Granular filtering by domain, date, and data category.</p>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Perplexity</div>
+                    <div class="stat-value" style="font-size: 2rem; color: var(--accent-danger);">Pre-packaged Summary</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Exa</div>
+                    <div class="stat-value" style="font-size: 2rem; color: var(--accent-success);">Raw Data Control</div>
+                </div>
             </div>
-            <p>Perfect for niche similarity search where keywords fail.</p>
         </div>
 
         <div class="slide" data-chapter="2">
-            <h3>Exa vs. Perplexity / You.com</h3>
-            <h2>The Black Box Problem</h2>
-            <div class="vs-container">
-                <div class="vs-side">
-                    <div class="icon-box" style="margin: 0 auto; color: #666; border-color: #333;">🤖</div>
-                    <h3 style="margin-top: 1rem; color: #aaa;">Conversationalist</h3>
-                    <p style="font-size: 1.2rem; max-width: 300px;">Gives you a summary, but you lose control over source ranking.</p>
-                </div>
-                <div class="vs-divider"><div class="vs-circle">VS</div></div>
-                <div class="vs-side">
-                    <div class="icon-box" style="margin: 0 auto;">⚡️</div>
-                    <h3 style="margin-top: 1rem; color: #fff;">Data Provider</h3>
-                    <p style="font-size: 1.2rem; max-width: 300px;">Exa provides granular filtering (domain, date) and raw data access.</p>
-                </div>
+            <h1 class="hero-text">Model-Ready <span class="highlight">Signal</span></h1>
+            <table class="comparison-table">
+                <tr><th>Feature</th><th>Legacy (Google/Serper)</th><th>Exa</th></tr>
+                <tr><td>Formatting</td><td>Cookie Banners / HTML Noise</td><td>Clean Markdown</td></tr>
+                <tr><td>Context</td><td>SEO Snippets</td><td>Semantic Highlights</td></tr>
+                <tr><td>Reliability</td><td>High Hallucination Risk</td><td>Grounded Context</td></tr>
+            </table>
+        </div>
+
+        <div class="slide" data-chapter="3">
+            <h1 class="hero-text">The <span class="highlight">Searchlight</span></h1>
+            <p class="sub-text">Firecrawl scrapes what you know. Exa finds what you don't.</p>
+            <div class="stat-card" style="margin-top: 2rem; border-left: 5px solid var(--accent-primary);">
+                <p style="font-size: 1.5rem;">"I need to find all companies doing X."</p>
             </div>
         </div>
 
         <div class="slide" data-chapter="3">
-            <h3>Exa vs. Google / Serper / Bing</h3>
-            <h2>Signal vs. Noise</h2>
-            
-            <div class="card-grid" style="margin-top: 2rem;">
-                <div class="card" style="background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.2);">
-                    <div class="card-title" style="color: var(--accent-danger);">Legacy Search</div>
-                    <div class="card-body">
-                        &bull; Polluted with SEO-spam<br>
-                        &bull; Loaded with Ads<br>
-                        &bull; Cookie banners<br>
-                        &bull; Requires scraping code
-                    </div>
+            <h1 class="hero-text">Intent over Keywords</h1>
+            <p class="sub-text">Brave uses strings. Exa uses meaning.</p>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Keyword Match</div>
+                    <div class="stat-value" style="font-size: 2rem;">"Machine Learning"</div>
                 </div>
-                <div class="card" style="background: rgba(34, 197, 94, 0.05); border-color: rgba(34, 197, 94, 0.2);">
-                    <div class="card-title" style="color: var(--accent-success);">Exa Signal</div>
-                    <div class="card-body">
-                        &bull; 100% SEO-spam free<br>
-                        &bull; Clean Markdown conversion<br>
-                        &bull; "Highlights" feature<br>
-                        &bull; Model-ready format
-                    </div>
-                </div>
-            </div>
-            <p style="margin-top: 2rem; font-size: 1.4rem;">Stop your LLM from hallucinating on Google Ads.</p>
-        </div>
-
-        <div class="slide" data-chapter="4">
-            <h3>Exa vs. Firecrawl / Parallel</h3>
-            <h1>Searchlight vs. Vacuum</h1>
-            <p>Firecrawl scrapes what you know. <br><span class="highlight-text">Exa discovers what you don't.</span></p>
-            <div class="card-grid" style="margin-top: 2rem; max-width: 800px;">
-                 <div class="card">
-                    <div class="card-title">Real-Time Index</div>
-                    <div class="card-body">Crawled every minute. Ground your AI in world events.</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Semantic Retrieval</div>
-                    <div class="card-body">Understand "Machine Learning" implies "Neural Networks".</div>
+                <div class="stat-card">
+                    <div class="stat-label">Neural Understanding</div>
+                    <div class="stat-value" style="font-size: 2rem; color: var(--accent-primary);">Research Context</div>
                 </div>
             </div>
         </div>
 
         <div class="slide" data-chapter="4">
-            <h3>Performance Metrics</h3>
-            <div class="big-number">&lt;500ms</div>
-            <p class="sub-stat">Latency</p>
-            <div class="big-number" style="font-size: 6rem; color: var(--accent-secondary);">94.9%</div>
-            <p class="sub-stat">Semantic Accuracy (SimpleQA)</p>
-        </div>
-
-        <div class="slide" data-chapter="5">
-            <h3>Why Exa Wins</h3>
-            <div class="comparison-container" style="max-width: 800px; margin: 0 auto;">
-                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #333; padding:1rem 0; font-size:1.2rem;">
-                    <span style="color:#888;">Privacy Angle</span>
-                    <span style="font-weight:700;">Performance (Exa)</span>
+            <h1 class="hero-text">Unmatched <span class="highlight">Speed</span></h1>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-value">< 500ms</div>
+                    <div class="stat-label">Latency</div>
                 </div>
-                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #333; padding:1rem 0; font-size:1.2rem;">
-                    <span style="color:#888;">Legacy Giant</span>
-                    <span style="font-weight:700;">AI-Native Successor (Exa)</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #333; padding:1rem 0; font-size:1.2rem;">
-                    <span style="color:#888;">Cost Headache</span>
-                    <span style="font-weight:700;">Modular Endpoints (Exa)</span>
+                <div class="stat-card">
+                    <div class="stat-value">94.9%</div>
+                    <div class="stat-label">SimpleQA Accuracy</div>
                 </div>
             </div>
         </div>
 
         <div class="slide" data-chapter="5">
-            <h1>Upgrade Your Infrastructure</h1>
-            <p style="margin-bottom: 2rem;">Migrate away from legacy systems. Reduce pre-processing code.</p>
-            <button class="pulse-btn">Get the Battlecards</button>
+            <h1 class="hero-text">Enterprise <span class="highlight">SLA</span></h1>
+            <p class="sub-text">Not a consumer search product. Production-ready infrastructure.</p>
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Update Frequency</div>
+                    <div class="stat-value" style="font-size: 2.5rem;">Every Minute</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Architecture</div>
+                    <div class="stat-value" style="font-size: 2.5rem;">Modular Endpoints</div>
+                </div>
+            </div>
         </div>
 
-    </main>
-
-    <script>
-        // State Management
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        const totalSlides = slides.length;
-        const counterElement = document.getElementById('slide-counter');
-        const chapterItems = document.querySelectorAll('.chapter-item');
-        const sidebar = document.getElementById('sidebar');
-
-        // Initial Render
-        updateUI();
-
-        // Keyboard Event Listeners
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
-                nextSlide();
-            } else if (e.key === 'ArrowLeft') {
-                prevSlide();
-            }
-        });
-
-        // Navigation Functions
-        function nextSlide() {
-            if (currentSlide < totalSlides - 1) {
-                currentSlide++;
-                updateUI();
-            }
-        } 
-
-        function prevSlide() {
-            if (currentSlide > 0) {
-                currentSlide--;
-                updateUI();
-            }
-        }
-
-        function jumpToChapter(chapterIndex) {
-            // Find the first slide with this chapter data attribute
-            const targetSlideIndex = Array.from(slides).findIndex(
-                slide => slide.getAttribute('data-chapter') == chapterIndex
-            );
-            
-            if (targetSlideIndex !== -1) {
-                currentSlide = targetSlideIndex;
-                updateUI();
-            }
-        }
-
-        // UI Update Logic
-        function updateUI() {
-            // 1. Update Slide Visibility
-            slides.forEach((slide, index) => {
-                if (index === currentSlide) {
-                    slide.classList.add('active');
-                    
-                    // Trigger Bar Chart Animation if on that slide
-                    const bars = slide.querySelectorAll('.comp-bar');
-                    if(bars.length > 0) {
-                        // Reset width to trigger transition
-                        bars.forEach(bar => {
-                            const originalWidth = bar.style.width;
-                            bar.style.width = '0';
-                            setTimeout(() => {
-                                bar.style.width = originalWidth;
-                            }, 100);
-                        });
-                    }
-
-                } else {
-                    slide.classList.remove('active');
-                }
-            });
-
-            // 2. Update Counter
-            counterElement.innerText = `${currentSlide + 1}/${totalSlides}`;
-
-            // 3. Update Sidebar Highlight
-            const activeSlide = slides[currentSlide];
-            const currentChapterIndex = activeSlide.getAttribute('data-chapter');
-            
-            chapterItems.forEach((item, index) => {
-                if (index == currentChapterIndex) {
-                    item.classList.add('active');
-                } else {
-                    item.classList.remove('active');
-                }
-            });
-        }
-    </script>
-</body>
-</html>
+        <div class="slide" data-chapter="5">
+            <h1 class="hero-text">Kill <span class="highlight">Pre-processing</span></h1>
+            <p class="sub-text">Stop building scrapers for Bing's "10 blue links."</p>
+            <div class="stat-card" style="margin-top: 3rem; text-align: center; background: linear-gradient(45deg, #111, #1a1a1a);">
+                <h2 style="font-size: 2.5rem;">Neural Relevance</h2>
