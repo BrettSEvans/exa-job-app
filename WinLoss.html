@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales & Competitor Intelligence Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            /* --- Theme Variables (Dark Mode) --- */
+            --bg-color: #050505;
+            --sidebar-bg: #0a0a0a;
+            --card-bg: #111111;
+            --text-color: #ffffff;
+            --text-muted: #888888;
+            --accent-primary: #a855f7; /* Purple */
+            --accent-secondary: #3b82f6; /* Blue */
+            --accent-success: #22c55e; /* Green */
+            --accent-danger: #ef4444; /* Red */
+            --sidebar-width: 260px;
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --border-color: #222;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden; /* Prevent body scroll, scrolling handled inside 'main' */
+        }
+
+        /* --- Sidebar Navigation Styles --- */
+        #sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid var(--border-color);
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            height: 100%;
+            flex-shrink: 0; /* Prevent sidebar from shrinking */
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-color);
+            margin-bottom: 2rem;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .brand span {
+            color: var(--accent-primary);
+        }
+
+        .chapter-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .chapter-item {
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+
+        .chapter-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        /* Active State for Sidebar Items */
+        .chapter-item.active {
+            background-color: rgba(168, 85, 247, 0.08);
+            color: var(--accent-primary);
+            border-left: 3px solid var(--accent-primary);
+        }
+
+        /* --- Main Content Area --- */
+        main {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; /* Allow vertical scrolling for content */
+            padding: 2rem;
+            position: relative;
+        }
+
+        /* --- Global Utility Classes for Views --- */
+        /* All views are hidden by default, except the active one */
+        .view-section {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        .view-section.active-view {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Header within Main */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        h2.page-title { margin: 0; font-size: 1.5rem; }
+
+        .controls { display: flex; gap: 10px; }
+        
+        select, button {
+            padding: 8px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: var(--sidebar-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            font-family: var(--font-main);
+        }
+        
+        select:focus, button:focus { outline: 1px solid var(--accent-primary); }
+
+        button.primary {
+            background-color: var(--accent-primary);
+            color: white;
+            border: none;
+        }
+        button.primary:hover { opacity: 0.9; }
+
+        /* --- Metrics Grid --- */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .metric-card h3 { 
+            margin: 0 0 10px 0; 
+            color: var(--text-muted); 
+            font-size: 0.85rem; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+        }
+        
+        .metric-card .value { font-size: 1.8rem; font-weight: 700; color: var(--text-color); }
+        .metric-card .sub-value { font-size: 0.8rem; color: var(--accent-success); margin-top: 5px; }
+
+        /* --- Charts Grid --- */
+        #charts-boundary {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            position: relative;
+            height: 40vh; /* Quarter screen height approx */
+            min-height: 320px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .chart-header strong { font-size: 1rem; color: var(--text-color); }
+        .chart-header small { font-size: 0.75rem; color: var(--text-muted); }
+
+        .chart-wrapper {
+            flex-grow: 1;
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* --- Drill Down & Table Styles --- */
+        .breadcrumbs { margin-bottom: 1.5rem; font-size: 0.95rem; color: var(--text-muted); }
+        .breadcrumbs span { color: var(--accent-primary); cursor: pointer; text-decoration: underline; }
+        .breadcrumbs strong { color: var(--text-color); }
+
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; color: var(--text-color); }
+        
+        th { 
+            text-align: left; 
+            padding: 12px 16px; 
+            background-color: rgba(255,255,255,0.03); 
+            color: var(--text-muted); 
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        td { padding: 12px 16px; border-bottom: 1px solid var(--border-color); }
+        tr:hover { background-color: rgba(255,255,255,0.02); }
+
+        .status-won { color: var(--accent-success); font-weight: 600; }
+        .status-lost { color: var(--accent-danger); font-weight: 600; }
+
+        /* --- Placeholder Styles for New Views --- */
+        .placeholder-content {
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        /* --- Drag Handle --- */
+        .drag-handle {
+            cursor: move;
+            color: var(--text-muted);
+            margin-right: 8px;
+            font-size: 12px;
+        }
+        .drag-handle:hover { color: var(--text-color); }
+        
+        .is-dragging {
+            z-index: 999;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid var(--accent-primary);
+        }
+
+        /* --- Loader --- */
+        .loader {
+            border: 2px solid var(--sidebar-bg);
+            border-top: 2px solid var(--accent-primary);
+            border-radius: 50%;
+            width: 14px;
+            height: 14px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 1024px) {
+            #charts-boundary { grid-template-columns: 1fr; }
+            .chart-container { height: 350px; }
+            #sidebar { display: none; } /* Hide sidebar on small screens for demo */
+            main { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav id="sidebar">
+        <div class="brand">
+            <span>⚡</span> Exa CompIntel
+        </div>
+        <ul class="chapter-list">
+            <li class="chapter-item active" onclick="switchView('dashboard-view', this)">Dashboard</li>
+            <li class="chapter-item" onclick="switchView('pipeline-view', this)">Deals Pipeline</li>
+            <li class="chapter-item" onclick="switchView('leaderboard-view', this)">Agent Leaderboard</li>
+            <li class="chapter-item" onclick="switchView('analysis-view', this)">Competitor Analysis</li>
+            <li class="chapter-item" onclick="switchView('settings-view', this)">Settings</li>
+        </ul>
+    </nav>
+
+    <main>
+        
+        <div id="dashboard-view" class="view-section active-view">
+            <header>
+                <h2 class="page-title">Executive Overview</h2>
+                <div class="controls">
+                    <select id="timeFilter" onchange="updateDashboard()">
+                        <option value="all">All Time</option>
+                        <option value="Q3">Q3 2024</option>
+                        <option value="Q4">Q4 2024</option>
+                    </select>
+                    <button class="primary" onclick="resetDashboard()">Reset View</button>
+                </div>
+            </header>
+
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <h3>Total Revenue</h3>
+                    <div class="value" id="totalRevenue">$0</div>
+                    <div class="sub-value">▲ 12% vs last month</div>
+                </div>
+                <div class="metric-card">
+                    <h3>Deals Closed</h3>
+                    <div class="value" id="totalDeals">0</div>
+                    <div class="sub-value" style="color: var(--text-muted)">Volume stable</div>
+                </div>
+                <div class="metric-card" style="border-left: 3px solid var(--accent-success);">
+                    <h3>Top Competitor</h3>
+                    <div class="value" id="topCompetitor">-</div>
+                    <div class="sub-value" style="color: var(--accent-success)">Most Frequent</div>
+                </div>
+                <div class="metric-card" style="border-left: 3px solid var(--accent-danger);">
+                    <h3>Win Rate</h3>
+                    <div class="value" id="winRate">0%</div>
+                    <div class="sub-value" style="color: var(--accent-danger)">▼ 2% dip</div>
+                </div>
+            </div>
+
+            <div id="charts-boundary">
+                <div class="chart-container" id="agent-chart-container">
+                    <div class="chart-header">
+                        <div>
+                            <span class="drag-handle" title="Drag to move">⋮⋮</span>
+                            <strong>Agent Performance</strong>
+                            <div id="api-loader" class="loader"></div>
+                        </div>
+                        <small>Click bar for details</small>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="agentChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <strong>Competitor Encounter Rate</strong>
+                        <small>Click slice for details</small>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="competitorChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <strong>Revenue Trends (6 Mo)</strong>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-container" style="justify-content:center; align-items:center;">
+                    <div style="text-align:center; color: var(--text-muted);">
+                        <div style="font-size: 2rem; margin-bottom: 10px;">+</div>
+                        <strong>Add Widget</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="pipeline-view" class="view-section">
+            <header><h2 class="page-title">Deals Pipeline</h2></header>
+            <div class="placeholder-content">
+                <h3>Kanban Board</h3>
+                <p>Visualization of deal stages would appear here.</p>
+            </div>
+        </div>
+
+        <div id="leaderboard-view" class="view-section">
+            <header><h2 class="page-title">Agent Leaderboard</h2></header>
+            <div class="placeholder-content">
+                <h3>Top Performers</h3>
+                <p>Detailed ranking tables would appear here.</p>
+            </div>
+        </div>
+
+        <div id="analysis-view" class="view-section">
+            <header><h2 class="page-title">Competitor Analysis</h2></header>
+            <div class="placeholder-content">
+                <h3>Deep Dive Analytics</h3>
+                <p>Advanced competitor feature comparison would appear here.</p>
+            </div>
+        </div>
+
+        <div id="settings-view" class="view-section">
+            <header><h2 class="page-title">Settings</h2></header>
+            <div class="placeholder-content">
+                <h3>Configuration</h3>
+                <p>User profile and dashboard preferences would appear here.</p>
+            </div>
+        </div>
+
+        <div id="drilldown-view" class="view-section">
+            <div class="breadcrumbs">
+                <span onclick="resetDashboard()">Dashboard</span> > <strong id="drilldown-title">Details</strong>
+            </div>
+            
+            <h2 id="drilldown-header" style="font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--text-color);">Deal Analysis</h2>
+            <div class="table-container">
+                <table id="detailsTable">
+                    <thead>
+                        <tr>
+                            <th>Deal ID</th>
+                            <th>Sales Agent</th>
+                            <th>Close Date</th>
+                            <th>Competitor</th>
+                            <th>Deal Size</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- 1. THEME & CHART CONFIGURATION ---
+        Chart.defaults.color = '#888888';
+        Chart.defaults.borderColor = '#222';
+        
+        const colors = {
+            purple: '#a855f7',
+            blue: '#3b82f6',
+            green: '#22c55e',
+            red: '#ef4444',
+            bg: ['#a855f7', '#3b82f6', '#22c55e', '#ef4444', '#f59e0b', '#ec4899', '#6366f1']
+        };
+
+        // --- 2. NAVIGATION LOGIC (New Feature) ---
+        /**
+         * Switches the main view area based on the sidebar selection.
+         * @param {string} viewId - The ID of the div to display (e.g., 'dashboard-view').
+         * @param {HTMLElement} menuElement - The clicked sidebar list item (for styling).
+         */
+        function switchView(viewId, menuElement) {
+            // A. Hide all View Sections
+            const views = document.querySelectorAll('.view-section');
+            views.forEach(view => {
+                view.classList.remove('active-view'); // Hide using CSS class
+                view.style.display = 'none'; // Ensure display none
+            });
+
+            // B. Show the Selected View
+            const activeView = document.getElementById(viewId);
+            if (activeView) {
+                activeView.classList.add('active-view');
+                activeView.style.display = 'block';
+            }
+
+            // C. Update Sidebar Active State
+            const menuItems = document.querySelectorAll('.chapter-item');
+            menuItems.forEach(item => item.classList.remove('active'));
+            
+            if (menuElement) {
+                menuElement.classList.add('active');
+            }
+        }
+
+        /**
+         * Resets the dashboard to its default state.
+         * Used by the "Reset View" button and Breadcrumbs.
+         */
+        function resetDashboard() {
+            // Find the Dashboard menu item to pass to switchView
+            // This ensures the sidebar highlight matches the view
+            const dashboardMenuItem = document.querySelector('.chapter-list li:first-child');
+            switchView('dashboard-view', dashboardMenuItem);
+        }
+
+        // --- 3. DATA GENERATION & MOCKING ---
+        const agents = ["Alice", "Bob", "Charlie", "Diana", "Ethan"];
+        const competitors = ["Perplexity", "parallel.ai", "Linkup.ai", "Google", "Tavily", "Bing", "Firecrawl"];
+        const statuses = ["Won", "Lost", "Won", "Won", "Lost"];
+
+        let allDeals = [];
+        let chartInstances = {};
+
+        function generateData(count) {
+            const data = [];
+            const startDate = new Date('2024-01-01');
+            for (let i = 0; i < count; i++) {
+                const randomDate = new Date(startDate.getTime() + Math.random() * (300 * 24 * 60 * 60 * 1000));
+                data.push({
+                    id: `DL-${1000 + i}`,
+                    agent: agents[Math.floor(Math.random() * agents.length)],
+                    competitor: competitors[Math.floor(Math.random() * competitors.length)],
+                    dealSize: Math.floor(Math.random() * 50000) + 5000,
+                    date: randomDate.toISOString().split('T')[0],
+                    status: statuses[Math.floor(Math.random() * statuses.length)],
+                });
+            }
+            return data;
+        }
+        
+        allDeals = generateData(200);
+
+        // --- 4. API SIMULATION ---
+        function fetchAgentPerformance() {
+            document.getElementById('api-loader').style.display = 'inline-block';
+            return new Promise((resolve) => {
+                // Simulate network latency
+                setTimeout(() => {
+                    const processedData = {};
+                    agents.forEach(a => processedData[a] = 0);
+                    allDeals.filter(d => d.status === 'Won').forEach(d => {
+                        processedData[d.agent] += d.dealSize;
+                    });
+                    document.getElementById('api-loader').style.display = 'none';
+                    resolve(processedData);
+                }, 600);
+            });
+        }
+
+        // --- 5. CHART RENDERING ---
+
+        async function initDashboard() {
+            calculateMetrics(allDeals);
+            await renderAgentChartViaAPI();
+            renderCompetitorChart(allDeals);
+            renderTrendChart(allDeals);
+        }
+
+        // Agent Chart (Bar)
+        async function renderAgentChartViaAPI() {
+            const ctx = document.getElementById('agentChart').getContext('2d');
+            const agentDataMap = await fetchAgentPerformance();
+            
+            if (chartInstances.agent) chartInstances.agent.destroy();
+
+            chartInstances.agent = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(agentDataMap),
+                    datasets: [{
+                        label: 'Revenue ($)',
+                        data: Object.values(agentDataMap),
+                        backgroundColor: colors.purple,
+                        borderRadius: 4,
+                        hoverBackgroundColor: '#c084fc'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    maxBarThickness: 50,
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#222' } },
+                        x: { grid: { display: false } }
+                    },
+                    // Drill-down trigger
+                    onClick: (e, activeEls) => {
+                        if (activeEls.length > 0) {
+                            const index = activeEls[0].index;
+                            const agentName = Object.keys(agentDataMap)[index];
+                            drillDown('agent', agentName);
+                        }
+                    }
+                }
+            });
+        }
+
+        // Competitor Chart (Doughnut)
+        function renderCompetitorChart(data) {
+            const ctx = document.getElementById('competitorChart').getContext('2d');
+            const compCounts = {};
+            competitors.forEach(c => compCounts[c] = 0);
+            data.forEach(d => compCounts[d.competitor]++);
+
+            if (chartInstances.competitor) chartInstances.competitor.destroy();
+
+            chartInstances.competitor = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(compCounts),
+                    datasets: [{
+                        data: Object.values(compCounts),
+                        backgroundColor: colors.bg,
+                        borderColor: '#111',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { position: 'right', labels: { boxWidth: 12, padding: 15 } } 
+                    },
+                    // Drill-down trigger
+                    onClick: (e, activeEls) => {
+                        if (activeEls.length > 0) {
+                            const index = activeEls[0].index;
+                            const compName = Object.keys(compCounts)[index];
+                            drillDown('competitor', compName);
+                        }
+                    }
+                }
+            });
+        }
+
+        // Trend Chart (Line)
+        function renderTrendChart(data) {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const monthlyData = new Array(12).fill(0);
+            data.filter(d => d.status === 'Won').forEach(d => {
+                const mIndex = new Date(d.date).getMonth();
+                monthlyData[mIndex] += d.dealSize;
+            });
+
+            if (chartInstances.trend) chartInstances.trend.destroy();
+
+            chartInstances.trend = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months.slice(0, 10),
+                    datasets: [{
+                        label: 'Revenue',
+                        data: monthlyData.slice(0, 10),
+                        borderColor: colors.green,
+                        backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 3,
+                        pointBackgroundColor: colors.green
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { grid: { color: '#222' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // --- 6. UTILITIES (Metrics & Drill-Down) ---
+
+        function calculateMetrics(data) {
+            const totalRev = data.reduce((acc, curr) => curr.status === 'Won' ? acc + curr.dealSize : acc, 0);
+            const totalDeals = data.length;
+            const wins = data.filter(d => d.status === 'Won').length;
+            const winRate = totalDeals ? Math.round((wins / totalDeals) * 100) : 0;
+            const compMap = {};
+            data.forEach(d => { compMap[d.competitor] = (compMap[d.competitor] || 0) + 1 });
+            const topComp = Object.keys(compMap).reduce((a, b) => compMap[a] > compMap[b] ? a : b, "N/A");
+
+            document.getElementById('totalRevenue').textContent = `$${(totalRev/1000).toFixed(1)}k`;
+            document.getElementById('totalDeals').textContent = totalDeals;
+            document.getElementById('winRate').textContent = `${winRate}%`;
+            document.getElementById('topCompetitor').textContent = topComp;
+        }
+
+        function drillDown(type, value) {
+            let filteredDeals = [];
+            let title = "";
+
+            if (type === 'agent') {
+                filteredDeals = allDeals.filter(d => d.agent === value);
+                title = `Agent: ${value}`;
+            } else if (type === 'competitor') {
+                filteredDeals = allDeals.filter(d => d.competitor === value);
+                title = `Competitor: ${value}`;
+            }
+
+            // Hide Dashboard View, Show Drilldown View
+            // Note: We use specific IDs here rather than generic switchView to maintain context
+            document.getElementById('dashboard-view').style.display = 'none';
+            document.getElementById('drilldown-view').style.display = 'block';
+            document.getElementById('drilldown-title').innerText = title;
+            
+            const tbody = document.querySelector('#detailsTable tbody');
+            tbody.innerHTML = ''; 
+
+            filteredDeals.forEach(deal => {
+                const row = document.createElement('tr');
+                const statusClass = deal.status === 'Won' ? 'status-won' : 'status-lost';
+                row.innerHTML = `
+                    <td>${deal.id}</td>
+                    <td>${deal.agent}</td>
+                    <td>${deal.date}</td>
+                    <td>${deal.competitor}</td>
+                    <td>$${deal.dealSize.toLocaleString()}</td>
+                    <td class="${statusClass}">${deal.status}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function updateDashboard() { initDashboard(); }
+
+        // --- 7. DRAG AND DROP LOGIC (Agent Chart) ---
+        const draggableItem = document.getElementById('agent-chart-container');
+        const boundary = document.getElementById('charts-boundary');
+        const dragHandle = document.querySelector('.drag-handle');
+        let isDragging = false;
+        let startX, startY, initialLeft, initialTop;
+
+        dragHandle.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            isDragging = true;
+            // Lock dimensions before position change
+            const width = draggableItem.offsetWidth;
+            const height = draggableItem.offsetHeight;
+            
+            draggableItem.classList.add('is-dragging');
+            draggableItem.style.width = `${width}px`;
+            draggableItem.style.height = `${height}px`;
+            draggableItem.style.position = 'absolute'; 
+            
+            startX = e.clientX;
+            startY = e.clientY;
+            initialLeft = draggableItem.offsetLeft;
+            initialTop = draggableItem.offsetTop;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            let newLeft = initialLeft + dx;
+            let newTop = initialTop + dy;
+
+            // Simple boundary logic
+            const maxLeft = boundary.offsetWidth - draggableItem.offsetWidth; 
+            const maxTop = boundary.offsetHeight - draggableItem.offsetHeight;
+
+            if (newLeft < 0) newLeft = 0;
+            if (newLeft > maxLeft) newLeft = maxLeft;
+            if (newTop < 0) newTop = 0;
+            if (newTop > maxTop) newTop = maxTop;
+
+            draggableItem.style.left = `${newLeft}px`;
+            draggableItem.style.top = `${newTop}px`;
+        });
+
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                draggableItem.classList.remove('is-dragging');
+                // Reset styling to flow naturally in grid
+                draggableItem.style.position = ''; 
+                draggableItem.style.width = ''; 
+                draggableItem.style.height = '40vh'; 
+                draggableItem.style.left = '';
+                draggableItem.style.top = '';
+            }
+        });
+
+        // --- 8. INITIALIZATION ---
+        window.onload = initDashboard;
+        
+        // Handle window resize for charts
+        window.addEventListener('resize', () => {
+             if(chartInstances.agent) chartInstances.agent.resize();
+        });
+
+    </script>
+</body>
+</html>
