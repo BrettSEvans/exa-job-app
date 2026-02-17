@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exa Sales: Competitive Intelligence</title>
+    <style>
+        :root {
+            --bg-color: #050505;
+            --sidebar-bg: #0a0a0a;
+            --card-bg: #111111;
+            --text-color: #ffffff;
+            --text-muted: #9ca3af;
+            --accent-primary: #a855f7; /* Purple */
+            --accent-glow: rgba(168, 85, 247, 0.15);
+            --accent-secondary: #3b82f6; /* Blue */
+            --accent-success: #22c55e; /* Green */
+            --sidebar-width: 280px;
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --transition-speed: 0.4s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+        }
+
+        /* Sidebar Navigation */
+        #sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            border-right: 1px solid #222;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            height: 100%;
+            flex-shrink: 0;
+        }
+
+        .brand {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-color);
+            margin-bottom: 2rem;
+            letter-spacing: -1px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .brand span {
+            color: var(--accent-primary);
+        }
+
+        .chapter-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .chapter-item {
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            border-radius: 8px;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-left: 3px solid transparent;
+            line-height: 1.3;
+        }
+
+        .chapter-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
+
+        .chapter-item.active {
+            background-color: var(--accent-glow);
+            color: var(--accent-primary);
+            border-left: 3px solid var(--accent-primary);
+        }
+
+        /* Scrollbar for sidebar */
+        .chapter-list::-webkit-scrollbar { width: 4px; }
+        .chapter-list::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+
+        /* Presentation Area */
+        #main-stage {
+            flex-grow: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding: 40px 60px;
+            overflow: hidden;
+        }
+
+        .slide-counter {
+            position: absolute;
+            top: 40px;
+            right: 60px;
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            z-index: 10;
+        }
+
+        .slide-container {
+            flex-grow: 1;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            max-width: 1200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateX(20px);
+            transition: all var(--transition-speed) ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(0);
+        }
+
+        /* Slide Content Styling */
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+            line-height: 1;
+        }
+
+        .narrative-text {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 2.5rem;
+            font-weight: 400;
+            max-width: 900px;
+            border-left: 4px solid var(--accent-primary);
+            padding-left: 20px;
+        }
+
+        /* Card Grid */
+        .card-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            width: 100%;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .card.exa-card {
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            background: linear-gradient(180deg, rgba(168, 85, 247, 0.05) 0%, rgba(10,10,10,0) 100%);
+        }
+
+        .card-label {
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            background: var(--bg-color);
+            padding: 0 10px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .exa-card .card-label { color: var(--accent-primary); border: 1px solid var(--accent-primary); border-radius: 4px; }
+        .comp-card .card-label { color: var(--text-muted); border: 1px solid #333; border-radius: 4px; }
+
+        .feature-title {
+            color: var(--text-color);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            margin-top: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .exa-card .feature-title { color: var(--accent-primary); }
+        .comp-card .feature-title { color: #ef4444; /* Red for weakness */ }
+
+        .feature-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #d1d5db;
+        }
+
+        /* Win Condition Box */
+        .win-box {
+            background: rgba(34, 197, 94, 0.05);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-top: auto;
+            position: relative;
+        }
+
+        .win-label {
+            color: var(--accent-success);
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .win-text {
+            font-size: 1.2rem;
+            color: #fff;
+        }
+
+        .source-tag {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: #555;
+            text-align: right;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <aside id="sidebar">
+        <div class="brand">Exa<span>.ai</span></div>
+        <ul class="chapter-list" id="chapterList">
+            </ul>
+    </aside>
+
+    <main id="main-stage">
+        <div class="slide-counter" id="slideCounter">1 / 10</div>
+        
+        <div class="slide-container" id="slideContainer">
+            </div>
+    </main>
+
+    <script>
+        const contentData = [
+            {
+                title: "Exa vs. Tavily",
+                compName: "Tavily",
+                narrative: "Tavily is a 'wrapper' for quick answers; Exa is an infrastructure for discovery.",
+                exaFeatureTitle: "Exa Killer Feature",
+                exaFeatureText: "find_similar. Use a URL to find 100 lookalikes.",
+                compWeaknessTitle: "Competitor Weakness",
+                compWeaknessText: "Tavily is optimized for small, agentic loops (1-10 results). It struggles with the scale and semantic depth required for mass research or lead generation.",
+                win: "When the client needs high-volume (100+ results) or niche similarity search.",
+                source: "ScrapeGraphAI"
+            },
+            {
+                title: "Exa vs. Perplexity (Sonar API)",
+                compName: "Perplexity",
+                narrative: "Perplexity is a conversationalist; Exa is a data provider.",
+                exaFeatureTitle: "Exa Killer Feature",
+                exaFeatureText: "Granular filtering (domain, date, data category).",
+                compWeaknessTitle: "Competitor Weakness",
+                compWeaknessText: "Perplexity's API acts like a 'black box'—you get a summary but lose control over the source ranking and raw data extraction.",
+                win: "When the client wants to build their own logic on top of search rather than using Perplexity's pre-packaged summary.",
+                source: "InsiderFinance"
+            },
+            {
+                title: "Exa vs. Serper / Google",
+                compName: "Google/Serper",
+                narrative: "Serper gives you the noise; Exa gives you the signal.",
+                exaFeatureTitle: "Exa Killer Feature",
+                exaFeatureText: "Clean Markdown conversion and 'Highlights.'",
+                compWeaknessTitle: "Competitor Weakness",
+                compWeaknessText: "Google results are polluted with SEO-spam and ads. Serper requires the user to build their own scraper to actually read the pages.",
+                win: "When the client is tired of their LLM 'hallucinating' because it ingested a Google ad or a cookie banner.",
+                source: "Exa Blog"
+            },
+            {
+                title: "Exa vs. Firecrawl",
+                compName: "Firecrawl",
+                narrative: "Firecrawl is a vacuum; Exa is a searchlight.",
+                exaFeatureTitle: "Exa Killer Feature",
+                exaFeatureText: "Semantic retrieval across the entire web.",
+                compWeaknessTitle: "Competitor Weakness",
+                compWeaknessText: "Firecrawl is for scraping sites you already know. It is not a discovery engine.",
+                win: "When the client says 'I need to find all companies doing X.' Firecrawl can't find them; it can only scrape them once found.",
+                source: "Firecrawl Blog"
+            },
+            {
+                title: "Exa vs. Brave Search API",
+                compName: "Brave Search",
+                narrative: "Brave is for privacy; Exa is for performance.",
+                exaFeatureTitle: "Exa Killer Feature",
+                exaFeatureText: "Semantic understanding of complex technical queries.",
+                compWeaknessTitle: "Competitor Weakness",
+                compWeaknessText: "Brave uses traditional keyword matching. It lacks the 'neural' understanding of intent.",
+                win: "For technical/academic use cases where keywords like 'ML' aren't enough, and you need the meaning of the research.",
+                source: "Brave Blog"
+            },
+            {
+                title: "Exa vs. You.com API",
+                compName: "You.com",
+                narrative: "You.com is a consumer hybrid; Exa is enterprise-first.",
+                exaFeatureTitle: "Exa Killer Feature",
+                exaFeatureText: "Websets (bulk listing and enrichment).",
+                compWeaknessTitle: "Competitor Weakness",
+                compWeaknessText: "You.com is heavily tailored to consumer chat experiences; its API is often secondary to its consumer search product.",
+                win: "When the client needs an SLA-backed infrastructure for a production B2B app.",
+                source: "Slashdot"
+            },
+            {
+                title: "Exa vs. Google Vertex AI",
+                compName: "Vertex AI",
+                narrative: "Vertex is for your internal data; Exa is for the World's data.",
+                exaFeatureTitle: "Exa Killer Feature",
+                exaFeatureText: "Real-time web index (crawled every minute).",
+                compWeaknessTitle: "Competitor Weakness",
+                compWeaknessText: "Vertex is fantastic for searching your PDFs in the cloud but 'Grounding with Google Search' is just the human Google index.",
+                win: "When the client needs to ground their AI in external world events with neural precision.",
+                source: "Google Cloud"
+            },
+            {
+                title: "Exa vs. Parallel.ai",
+                compName: "Parallel.ai",
+                narrative: "Parallel is for 'deep reasoning' tokens; Exa is for 'raw context.'",
+                exaFeatureTitle: "Exa Killer Feature",
+                exaFeatureText: "Lower latency and higher semantic accuracy (94.9% on SimpleQA).",
+                compWeaknessTitle: "Competitor Weakness",
+                compWeaknessText: "Parallel's pricing is extremely complex (8+ tiers). It can take minutes to return results for 'deep' tasks.",
+                win: "When the client needs real-time speed (<500ms) without the 'spreadsheet-style' pricing headache.",
+                source: "Roundproxies"
+            },
+            {
+                title: "Exa vs. Linkup.ai",
+                compName: "Linkup.ai",
+                narrative: "Linkup is a 'Deep Research' tool; Exa is a 'Search API.'",
+                exaFeatureTitle: "Exa Killer Feature",
+                exaFeatureText: "API modularity (separate endpoints for search, content, and similarity).",
+                compWeaknessTitle: "Competitor Weakness",
+                compWeaknessText: "Linkup is simplified for one-click research but lacks the specialized endpoints (Websets) for bulk data operations.",
+                win: "For developers who want to unbundle search and crawling to save costs.",
+                source: "Linkup Blog"
+            },
+            {
+                title: "Exa vs. Bing Search API",
+                compName: "Bing Search",
+                narrative: "Bing is a legacy giant; Exa is the AI-native successor.",
+                exaFeatureTitle: "Exa Killer Feature",
+                exaFeatureText: "Neutral relevance. Bing results are heavily weighted by Microsoft’s internal SEO and partnership interests.",
+                compWeaknessTitle: "Competitor Weakness",
+                compWeaknessText: "Bing returns '10 blue links' (URLs). Exa returns the actual content in a clean, model-ready format.",
+                win: "When a prospect is migrating away from legacy systems and wants to reduce the 'pre-processing' code they have to write.",
+                source: "Patronus AI"
+            }
+        ];
+
+        let currentIndex = 0;
+        const chapterList = document.getElementById('chapterList');
+        const slideContainer = document.getElementById('slideContainer');
+        const counter = document.getElementById('slideCounter');
+
+        function init() {
+            contentData.forEach((item, i) => {
+                // Create Sidebar Navigation Items
+                const li = document.createElement('li');
+                li.className = `chapter-item ${i === 0 ? 'active' : ''}`;
+                li.innerText = item.title;
+                li.onclick = () => goToSlide(i);
+                chapterList.appendChild(li);
+
+                // Create Slide Elements
+                const slide = document.createElement('div');
+                slide.className = `slide ${i === 0 ? 'active' : ''}`;
+                
+                slide.innerHTML = `
+                    <h1>${item.title}</h1>
+                    <div class="narrative-text">
+                        "${item.narrative}"
+                    </div>
+
+                    <div class="card-grid">
+                        <div class="card exa-card">
+                            <div class="card-label">Exa.ai</div>
+                            <div class="feature-title">${item.exaFeatureTitle}</div>
+                            <div class="feature-text">${item.exaFeatureText}</div>
+                        </div>
+
+                        <div class="card comp-card">
+                            <div class="card-label">${item.compName}</div>
+                            <div class="feature-title">${item.compWeaknessTitle}</div>
+                            <div class="feature-text">${item.compWeaknessText}</div>
+                        </div>
+                    </div>
+
+                    <div class="win-box">
+                        <span class="win-label">When to Win</span>
+                        <div class="win-text">${item.win}</div>
+                    </div>
+                    
+                    <div class="source-tag">Source: ${item.source}</div>
+                `;
+                slideContainer.appendChild(slide);
+            });
+        }
+
+        function goToSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            const navItems = document.querySelectorAll('.chapter-item');
+
+            // Remove active class from current
+            slides[currentIndex].classList.remove('active');
+            navItems[currentIndex].classList.remove('active');
+
+            // Update index
+            currentIndex = index;
+
+            // Add active class to new
+            slides[currentIndex].classList.add('active');
+            navItems[currentIndex].classList.add('active');
+            
+            // Update counter
+            counter.innerText = `${currentIndex + 1} / ${contentData.length}`;
+            
+            // Ensure nav item is visible in scroll
+            navItems[currentIndex].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "ArrowRight") {
+                if (currentIndex < contentData.length - 1) goToSlide(currentIndex + 1);
+            } else if (e.key === "ArrowLeft") {
+                if (currentIndex > 0) goToSlide(currentIndex - 1);
+            }
+        });
+
+        // Initialize presentation
+        init();
+    </script>
+</body>
+</html>
